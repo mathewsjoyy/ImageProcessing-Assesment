@@ -3,33 +3,94 @@ clear; close all;
 % Task 1: Pre-processing -----------------------
 % Step-1: Load input image
 I = imread('IMG_01.jpg');
-figure, imshow(I)
 
 % Step-2: Covert image to grayscale
 I_gray = rgb2gray(I);
-figure, imshow(I_gray)
 
 % Step-3: Rescale image using bilinear interpolation
 I_gray_scale_bi = imresize(I_gray, 0.5, "bilinear");
-figure;
-imshow(I_gray_scale_bi)
+%figure, imshow(I_gray_scale_bi);
 
 % Step-4: Produce histogram before enhancing
-histogram(I_gray_scale_bi)
-title("Step-4: Produce a histogram for the rescaled image.")
+histogram(I_gray_scale_bi);
+title("Step-4: Histogram before enhancing");
 
-% Step-5: Enhance image before binarisation
-I_gray_scale_bi_enhanced = adapthisteq(I_gray_scale_bi);
-figure;
-imshow(I_gray_scale_bi_enhanced);
+
+% Step-5: Enhance image before binarisation using contrast stretching
+% converts the intensity image I to double precision
+J = 255*im2double(I_gray_scale_bi);
+mi = min(min(J)); % find the minimum pixel intensity
+ma = max(max(J)); % find the maximum pixel intensity
+
+% Use the imadjust function to enhance the image
+I_gray_scale_bi_enhanced = imadjust(I_gray_scale_bi,[mi/255; ma/255],[0; 1]);
+
+% Display the enhanced image
+figure, imshow(I_gray_scale_bi_enhanced);
 
 % Step-6: Histogram after enhancement
 histogram(I_gray_scale_bi_enhanced);
-title("Step-4: Produce a histogram for after enhancement.");
+title("Step-6: Histogram for after enhancement.");
+
 
 % Step-7: Image Binarisation
+threshold = double(120/255); 
+
+binarisedImage = imbinarize(I_gray_scale_bi_enhanced, threshold);
+figure, imshow(binarisedImage)
+title("Step-5: Producing binarised image")
+
+
+
+% Display the re-sized image, histograms before and after enhancement,
+% enhanced image and the binarised image
+figure,subplot(3, 2, 1),imshow(I_gray_scale_bi);title('Re-sized Image');
+axis on;
+
+subplot(3, 2, 2),histogram(I_gray_scale_bi);title('Histogram (before enhancement)');
+axis on;
+
+subplot(3, 2, 3),imshow(I_gray_scale_bi_enhanced);title('Enhanced Image'); 
+axis on;
+
+subplot(3, 2, 4),histogram(I_gray_scale_bi_enhanced);title('Histogram (after enhancement)'); 
+axis on;
+
+subplot(3, 2, 5),imshow(binarisedImage);title('Binarised Image'); 
+axis on;
+
+pos = get(gcf, 'Position'); % gives the position of current sub-plot
+set(gcf, 'Position',pos+[0 -100 100 100]) % set new position of current sub - plot
+
+
 
 % Task 2: Edge detection ------------------------
+
+% Experiment with the 3 smoothing methods below which one give better edge
+% detecetion results or neither?
+% Smooth the image using a Gaussian filter
+I_gray_scale_bi_enhanced = imgaussfilt(I_gray_scale_bi_enhanced, 2);
+% Smooth the image using a median filter
+img_smooth = medfilt2(img);
+% Smooth the image using a bilateral filter
+img_smooth = imbilatfilt(img);
+
+edgeDetectionSobel = edge(I_gray_scale_bi_enhanced,'sobel');
+figure;
+imshow(edgeDetectionSobel)
+title("Task 2: Edge Detection - Sobel")
+
+edgeDetectionCanny = edge(I_gray_scale_bi_enhanced,'canny');
+figure; 
+imshow(edgeDetectionCanny)
+title("Task 2: Edge Detection - Canny")
+
+edgeDetectionPrewitt = edge(I_gray_scale_bi_enhanced,'Prewitt');
+figure; 
+imshow(edgeDetectionPrewitt)
+title("Task 2: Edge Detection - Prewitt")
+
+
 
 % Task 3: Simple segmentation --------------------
 
