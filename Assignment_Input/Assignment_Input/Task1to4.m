@@ -41,7 +41,6 @@ figure, imshow(binarisedImage)
 title("Step-5: Producing binarised image")
 
 
-
 % Display the re-sized image, histograms before and after enhancement,
 % enhanced image and the binarised image
 figure,subplot(3, 2, 1),imshow(I_gray_scale_bi);title('Re-sized Image');
@@ -67,13 +66,14 @@ set(gcf, 'Position',pos+[0 -100 100 100]) % set new position of current sub - pl
 % Task 2: Edge detection ------------------------
 
 % Experiment with the 3 smoothing methods below which one give better edge
-% detecetion results or neither?
-% Smooth the image using a Gaussian filter
-I_gray_scale_bi_enhanced = imgaussfilt(I_gray_scale_bi_enhanced, 2);
+% detecetion results or neither? to reduce any noise
+% Smooth the image using a Gaussian filter (test cahnign the standard
+% deivation)
+I_gray_scale_bi_enhanced = imgaussfilt(I_gray_scale_bi_enhanced, 1.5);
 % Smooth the image using a median filter
-img_smooth = medfilt2(img);
+img_smooth = medfilt2(I_gray_scale_bi_enhanced);
 % Smooth the image using a bilateral filter
-img_smooth = imbilatfilt(img);
+img_smooth = imbilatfilt(I_gray_scale_bi_enhanced);
 
 edgeDetectionSobel = edge(I_gray_scale_bi_enhanced,'sobel');
 figure;
@@ -91,7 +91,16 @@ imshow(edgeDetectionPrewitt)
 title("Task 2: Edge Detection - Prewitt")
 
 
-
 % Task 3: Simple segmentation --------------------
+% Fill the holes to get binary image of the objects
+% Try get rid of smoothing / using differnt echniqwues as some of the edges
+% are not connected fulling for the objects
+filled = imfill(edgeDetectionCanny, "holes");
+
+% Remove small objects that are not screws or washers
+cleaned = bwareaopen(filled, 50); % Adjust the second parameter as needed
+
+imshow(cleaned);
+
 
 % Task 4: Object Recognition --------------------
