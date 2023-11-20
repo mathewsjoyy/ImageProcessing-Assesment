@@ -25,6 +25,7 @@ ma = max(max(J)); % find the maximum pixel intensity
 % Use the imadjust function to enhance the image
 I_gray_scale_bi_enhanced = imadjust(I_gray_scale_bi,[mi/255; ma/255],[0; 1]);
 
+
 % Display the enhanced image
 figure; imshow(I_gray_scale_bi_enhanced);
 
@@ -33,15 +34,10 @@ histogram(I_gray_scale_bi_enhanced);
 title("Step-6: Histogram for after enhancement.");
 
 
-
 % Step-7: Image Binarisation
-threshold = double(125/255); 
-
-binarisedImage = imbinarize(I_gray_scale_bi_enhanced, threshold);
+binarisedImage = imbinarize(I_gray_scale_bi_enhanced, "adaptive", "ForegroundPolarity", "dark", "Sensitivity", 0.50);
 figure, imshow(binarisedImage)
 title("Step-5: Producing binarised image")
-
-
 
 
 % Display the re-sized image, histograms before and after enhancement,
@@ -116,19 +112,20 @@ title("Task3 – Simple Segmentation");
 % Get the aspect ratio of each blob.
 props = regionprops(I_filled_segmented, 'MajorAxisLength', 'MinorAxisLength', 'Area');
 
-aMajor = [props.MajorAxisLength]
-aMinor = [props.MinorAxisLength]
-allAreas = sort([props.Area])
-aspectRatios = aMajor ./ aMinor
-numBlobs = length(props)
+aMajor = [props.MajorAxisLength];
+aMinor = [props.MinorAxisLength];
+allAreas = sort([props.Area]);
+aspectRatios = aMajor ./ aMinor;
+numBlobs = length(props);
 cmap = zeros(numBlobs+1, 3);
 for k = 1 : numBlobs
-	if aspectRatios(k) > 2 % Whatever value you want.
-		cmap(k+1, :) = [1, 0, 0]; % Red.
+	if aspectRatios(k) > 2 % value to distinguish between screw / washer
+		cmap(k+1, :) = [1, 0, 0]; % Red for small screws
 	else
-		cmap(k+1, :) = [0.9100, 0.4100, 0.1700]; % Orange.
+		cmap(k+1, :) = [0.9100, 0.4100, 0.1700]; % Orange for washers
 	end
 end
+
 cmap;
 labeledImage = bwlabel(I_filled_segmented);
 imshow(labeledImage, []);
