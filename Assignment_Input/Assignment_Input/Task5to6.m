@@ -144,13 +144,18 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     % Get the aspect ratio of each blob.
     props = regionprops(I_filled_segmented, 'MajorAxisLength', 'MinorAxisLength', 'Area');
     
+    % Get the major and minor axis into a vector
     aMajor = [props.MajorAxisLength];
     aMinor = [props.MinorAxisLength];
     allAreas = sort([props.Area]);
+
+    % Compute aspect ratios
     aspectRatios = aMajor ./ aMinor;
     numBlobs = length(props);
     cmap = zeros(numBlobs+1, 3);
-
+    
+    % For each blob number assign the color to be used for it,
+    % this depends on that blob's aspect ratio.
     for k = 1 : numBlobs
         % If statement determining colour based on blob aspect ratio
 	    if aspectRatios(k) > 1.8 && aspectRatios(k) < 4

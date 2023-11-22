@@ -115,15 +115,21 @@ title("Task3 – Simple Segmentation");
 %%% CHANGE THI8S BELOW SECTION OF CODE AROUND / REFERENCE ORIGNAL CODE %%%
 %%% SAME FOR THE SAME PART IN TASK 5-6
 
-
+% Make measurements for each blob
 props = regionprops(I_filled_segmented, 'MajorAxisLength', 'MinorAxisLength', 'Area');
 
+% Get the major and minor axis into a vector
 aMajor = [props.MajorAxisLength];
 aMinor = [props.MinorAxisLength];
 allAreas = sort([props.Area]);
+
+% Compute aspect ratios
 aspectRatios = aMajor ./ aMinor;
 numBlobs = length(props);
 cmap = zeros(numBlobs+1, 3);
+
+% For each blob number assign the color to be used for it,
+% this depends on that blob's aspect ratio.
 for k = 1 : numBlobs
 	if aspectRatios(k) > 2 % value to distinguish between screw / washer
 		cmap(k+1, :) = [1, 0, 0]; % Red for small screws
@@ -132,6 +138,7 @@ for k = 1 : numBlobs
 	end
 end
 
+% Label the binary image and apply the colourmap
 labeledImage = bwlabel(I_filled_segmented);
 imshow(labeledImage, []);
 colormap(cmap);
