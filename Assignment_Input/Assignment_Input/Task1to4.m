@@ -9,12 +9,10 @@ I_gray = rgb2gray(I);
 
 % Step-3: Rescale image using bilinear interpolation
 I_gray_scale_bi = imresize(I_gray, 0.5, "bilinear");
-%figure, imshow(I_gray_scale_bi);
 
 % Step-4: Produce histogram before enhancing
 histogram(I_gray_scale_bi);
 title("Step-4: Histogram before enhancing");
-
 
 % Step-5: Enhance image before binarisation using contrast stretching
 % converts the intensity image I to double precision
@@ -23,8 +21,7 @@ mi = min(min(J)); % find the minimum pixel intensity
 ma = max(max(J)); % find the maximum pixel intensity
 
 % Use the imadjust function to enhance the image
-I_gray_scale_bi_enhanced = imadjust(I_gray_scale_bi,[mi/255; ma/255],[0; 1]);
-
+I_gray_scale_bi_enhanced = imadjust(I_gray_scale_bi,[mi/255; ma/255],[0; 0.9]);
 
 % Display the enhanced image
 figure; imshow(I_gray_scale_bi_enhanced);
@@ -33,12 +30,10 @@ figure; imshow(I_gray_scale_bi_enhanced);
 histogram(I_gray_scale_bi_enhanced);
 title("Step-6: Histogram for after enhancement.");
 
-
 % Step-7: Image Binarisation
 binarisedImage = imbinarize(I_gray_scale_bi_enhanced, "adaptive", "ForegroundPolarity", "dark", "Sensitivity", 0.50);
 figure, imshow(binarisedImage)
 title("Step-5: Producing binarised image")
-
 
 % Display the re-sized image, histograms before and after enhancement,
 % enhanced image and the binarised image
@@ -59,6 +54,8 @@ axis on;
 
 pos = get(gcf, 'Position'); % gives the position of current sub-plot
 set(gcf, 'Position',pos+[0 -100 100 100]) % set new position of current sub - plot
+
+
 
 
 % Task 2: Edge detection ------------------------
@@ -87,6 +84,8 @@ imshow(edgeDetectionPrewitt)
 title("Task 2: Edge Detection - Prewitt")
 
 
+
+
 % Task 3: Simple segmentation --------------------
 
 % Disk shaped structuring element with a radius of 3 pixels
@@ -96,10 +95,10 @@ se = strel("disk", 3);
 I_close = imclose(edgeDetectionCanny, se);
 
 % Fill the objects holes
-filled = imfill(I_close, "holes");
+I_filled_segmented = imfill(I_close, "holes");
 
 % Remove small objects (that cant be screw / washer)
-I_filled_segmented = bwareaopen(filled,20);
+I_filled_segmented = bwareaopen(I_filled_segmented,20);
 
 % Display segmented image
 figure;
@@ -107,9 +106,16 @@ imshow(I_filled_segmented);
 title("Task3 – Simple Segmentation");
 
 
+
+
 % Task 4: Object Recognition --------------------
 % Label the connected components in the binary image
 % Get the aspect ratio of each blob.
+
+%%% CHANGE THI8S BELOW SECTION OF CODE AROUND / REFERENCE ORIGNAL CODE %%%
+%%% SAME FOR THE SAME PART IN TASK 5-6
+
+
 props = regionprops(I_filled_segmented, 'MajorAxisLength', 'MinorAxisLength', 'Area');
 
 aMajor = [props.MajorAxisLength];
@@ -126,7 +132,6 @@ for k = 1 : numBlobs
 	end
 end
 
-cmap;
 labeledImage = bwlabel(I_filled_segmented);
 imshow(labeledImage, []);
 colormap(cmap);
