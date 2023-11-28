@@ -67,21 +67,21 @@ img_smooth = medfilt2(I_gray_scale_bi_enhanced);
 % Test out sobel method for edge detection
 edgeDetectionSobel = edge(img_smooth,'sobel');
 figure;
-imshow(edgeDetectionSobel)
-title("Task 2: Edge Detection - Sobel")
+imshow(edgeDetectionSobel);
+title("Task 2: Edge Detection - Sobel");
 
 % Test out canny method for edge detection
 % Change the sigma value to "0.08" to perform further noiser reduction
 edgeDetectionCanny = edge(img_smooth,'canny', 0.08);
 figure; 
-imshow(edgeDetectionCanny)
-title("Task 2: Edge Detection - Canny")
+imshow(edgeDetectionCanny);
+title("Task 2: Edge Detection - Canny");
 
 % Test out prewitt method for edge detection
 edgeDetectionPrewitt = edge(img_smooth,'prewitt');
 figure; 
-imshow(edgeDetectionPrewitt)
-title("Task 2: Edge Detection - Prewitt")
+imshow(edgeDetectionPrewitt);
+title("Task 2: Edge Detection - Prewitt");
 
 
 
@@ -140,5 +140,6 @@ end
 
 % Label the binary image and apply the colourmap
 labeledImage = bwlabel(I_filled_segmented);
+figure;
 imshow(labeledImage, []);
 colormap(cmap);
