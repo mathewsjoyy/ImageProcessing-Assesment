@@ -1,6 +1,11 @@
 % Task 5: Robust method --------------------------
 clear; close all; clc;
 
+% Define a vector to store dice,precision and recall scores
+dice_scores = [];
+precision_scores = [];
+recall_scores = [];
+
 % Loop through all 10 images
 for i = 1:10 
   
@@ -29,48 +34,66 @@ for i = 1:10
   imshow(labeled_image, []);
   colormap(cmap);
   title("Washers & Screws Image (segmented): img " +i);
-
-
-
+  
+  % Convert image to binary using logical
   labeled_image = logical(labeled_image);
 
   % Task 6: Performance evaluation -----------------
   % Step 1: Load ground truth data
   try
     img_name = "IMG_" + str + "_GT.png";
+    % Convert image to binary using logical
     GT_img = logical(imread(img_name));
   catch ME
     disp("Error Reading Image (image " + img_name + ") does " + ...
         "not exist in current path.");
   end
-    
+
+  % Step 2: Calculate the dice score, precision and recall of the labelled
+  % image to the ground truth image
+  % Compute the Precision, and Recall
+  [bf_score, precision, recall] = bfscore(labeled_image, GT_img);
+  
+  % Compute the 
+  similarity = dice(labeled_image, GT_img);
+  
+  % Display out metric scores for current image
+  disp(['Metrics for IMG_', str]);
+  disp(['Dice Score: ' ,num2str(similarity), ', Precision: ', num2str(precision), '' ...
+      ', Recall: ', num2str(recall), newline]);
+
+  % Add the dice score, precision and recall to global vector storing the
+  % values for all images
+  dice_scores(end+1) = similarity;
+  precision_scores(end+1) = precision;
+  recall_scores(end+1) = recall;
+end
+
+% Caculate the mean and standard deviation of dice score,precision and recall
+% for all all images
+mean_dice = mean(dice_scores);
+std_dice  = std(dice_scores);
+
+mean_precision = mean(precision_scores);
+std_precision  = std(precision_scores);
+
+mean_recall = mean(recall_scores);
+std_recall  = std(recall_scores);
+
+disp(['Mean of Dice Scores:', num2str(mean_dice), ...
+    ', Std. of Dice Scores:', num2str(std_dice)]);
+
+disp(['Mean of Precision Scores:', num2str(mean_precision), ...
+    ', Std. of Precision Scores:', num2str(std_precision)]);
+
+disp(['Mean of Recall Scores:', num2str(mean_recall), ...
+    ', Std. of Recall Scores:', num2str(std_recall)]);
+
+
   % To visualise the ground truth image, you can
   % use the following code.
   %L_GT = label2rgb(GT, 'prism','k','shuffle');
   %figure, imshow(L_GT);
-    
-  % Compute the Dice Score, Precision, and Recall
-  [score, precision, recall] = bfscore(labeled_image, GT_img);
-    
-  disp(['Dice Score: ' ,num2str(score), ', Precision: ', num2str(precision), '' ...
-      ', Recall: ', num2str(recall) ]);
-
-  % https://uk.mathworks.com/matlabcentral/answers/696065-how-to-apply-colours-of-my-choosing-to-labels-in-a-binary-image-based-on-their-individual-areas
-end
-
-
-
-
-
-% Task 6: Performance evaluation -----------------
-% Step 1: Load ground truth data and the predicted image
-GT = imread("IMG_01_GT.png");
-predicted = imread('IMG_05.jpg');
-
-% To visualise the ground truth image, you can
-% use the following code.
-L_GT = label2rgb(GT, 'prism','k','shuffle');
-figure, imshow(L_GT);
 
 
 
@@ -134,11 +157,6 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     
     % Remove small objects (that cant be screw / washer)
     I_filled_segmented = bwareaopen(I_filled_segmented,20);
-    
-    % Display segmented image
-    %figure;
-    %imshow(I_filled_segmented);
-    %title("Simple Segmentation");
 
     % Label the connected components in the binary image
     % Get the aspect ratio of each blob.
