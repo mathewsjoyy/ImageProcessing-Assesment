@@ -90,15 +90,6 @@ disp(['Mean of Recall Scores:', num2str(mean_recall), ...
     ', Std. of Recall Scores:', num2str(std_recall)]);
 
 
-  % To visualise the ground truth image, you can
-  % use the following code.
-  %L_GT = label2rgb(GT, 'prism','k','shuffle');
-  %figure, imshow(L_GT);
-
-
-
-
-
 
 % Function defnition for task 5 robust method (task 1-4 condensed down)
 % Takes input image to perform the image process robust pipeline
@@ -165,7 +156,6 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     % Get the major and minor axis into a vector
     aMajor = [props.MajorAxisLength];
     aMinor = [props.MinorAxisLength];
-    allAreas = sort([props.Area]);
 
     % Compute aspect ratios
     aspectRatios = aMajor ./ aMinor;

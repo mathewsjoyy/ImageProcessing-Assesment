@@ -106,22 +106,19 @@ imshow(I_filled_segmented);
 title("Task3 – Simple Segmentation");
 
 
-
-
 % Task 4: Object Recognition --------------------
+% Reference: Below code is a modified and extended version of:
+% https://uk.mathworks.com/matlabcentral/answers/1990198-extracting-boundaries-properties-from-regionprops
+
 % Label the connected components in the binary image
 % Get the aspect ratio of each blob.
 
-%%% CHANGE THI8S BELOW SECTION OF CODE AROUND / REFERENCE ORIGNAL CODE %%%
-%%% SAME FOR THE SAME PART IN TASK 5-6
-
 % Make measurements for each blob
-props = regionprops(I_filled_segmented, 'MajorAxisLength', 'MinorAxisLength', 'Area');
+props = regionprops(I_filled_segmented, 'MajorAxisLength', 'MinorAxisLength');
 
 % Get the major and minor axis into a vector
 aMajor = [props.MajorAxisLength];
 aMinor = [props.MinorAxisLength];
-allAreas = sort([props.Area]);
 
 % Compute aspect ratios
 aspectRatios = aMajor ./ aMinor;
