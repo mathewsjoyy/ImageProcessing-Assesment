@@ -1,7 +1,7 @@
 % Task 5: Robust method --------------------------
 clear; close all; clc;
 
-% Define a vector to store dice,precision and recall scores
+% Define a vector to store all dice,precision and recall scores
 dice_scores = [];
 precision_scores = [];
 recall_scores = [];

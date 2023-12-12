@@ -1,3 +1,4 @@
+% Clear memory and close any open figures
 clear; close all;
 
 % Task 1: Pre-processing -----------------------
@@ -56,8 +57,6 @@ pos = get(gcf, 'Position'); % gives the position of current sub-plot
 set(gcf, 'Position',pos+[0 -100 100 100]) % set new position of current sub - plot
 
 
-
-
 % Task 2: Edge detection ------------------------
 
 % Use median filtering to help reduce noise in iamge before
@@ -82,8 +81,6 @@ edgeDetectionPrewitt = edge(img_smooth,'prewitt');
 figure; 
 imshow(edgeDetectionPrewitt);
 title("Task 2: Edge Detection - Prewitt");
-
-
 
 
 % Task 3: Simple segmentation --------------------
