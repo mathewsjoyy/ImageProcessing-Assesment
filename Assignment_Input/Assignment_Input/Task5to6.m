@@ -35,33 +35,22 @@ for i = 1:10
   colormap(cmap);
   title("Washers & Screws Image (segmented): img " +i);
   
-  % Convert image to binary using logical
-  labeled_image = logical(labeled_image);
 
   % Task 6: Performance evaluation -----------------
   % Step 1: Load ground truth data
   try
     img_name = "IMG_" + str + "_GT.png";
     % Convert image to binary using logical
-    GT_img = logical(imread(img_name));
+    GT_img = imread(img_name);
   catch ME
     disp("Error Reading Image (image " + img_name + ") does " + ...
         "not exist in current path.");
   end
 
-  % Step 2: Calculate the dice score, precision and recall of the labelled
-  % image to the ground truth image
-  % Compute the Precision, and Recall
-  [bf_score, precision, recall] = bfscore(labeled_image, GT_img);
-  
-  % Compute the 
-  similarity = dice(labeled_image, GT_img);
-  
-  % Display out metric scores for current image
+  % Step 2: Call the evaluate method on our segmented image and its ground truth
   disp(['Metrics for IMG_', str]);
-  disp(['Dice Score: ' ,num2str(similarity), ', Precision: ', num2str(precision), '' ...
-      ', Recall: ', num2str(recall), newline]);
-
+  [similarity, precision, recall] = evaluate(labeled_image, GT_img);
+  
   % Add the dice score, precision and recall to global vector storing the
   % values for all images
   dice_scores(end+1) = similarity;
@@ -80,6 +69,7 @@ std_precision  = std(precision_scores);
 mean_recall = mean(recall_scores);
 std_recall  = std(recall_scores);
 
+disp('- Mean & SD for all sample images -')
 disp(['Mean of Dice Scores:', num2str(mean_dice), ...
     ', Std. of Dice Scores:', num2str(std_dice)]);
 
@@ -93,7 +83,7 @@ disp(['Mean of Recall Scores:', num2str(mean_recall), ...
 
 % Function defnition for task 5 robust method (task 1-4 condensed down)
 % Takes input image to perform the image process robust pipeline
-% Outputs final label segmented image (and its colour map)
+% Returns final label segmented image (and its colour map)
 function [labeled_image, cmap] = screw_washer_detection(input_img)
     % Covert image to grayscale
     img_gray = rgb2gray(input_img);
@@ -176,4 +166,24 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     end
     
     labeled_image = bwlabel(I_filled_segmented);
+end
+
+
+% Function defnition for task 6 evaluation method
+% Takes 2 input images the image you want to evaluate and its ground truth
+% Returns the dice score, precision and recall, and also displays to screen
+function [similarity, precision, recall] = evaluate(segmentedImage, groundTruth) 
+  % Convert images to binary using logical to work with our evaluation methods
+  segmentedImage = logical(segmentedImage);
+  groundTruth = logical(groundTruth);
+
+  % Compute the Precision, and Recall
+  [bf_score, precision, recall] = bfscore(segmentedImage, groundTruth);
+  
+  % Compute the dice score
+  similarity = dice(segmentedImage, groundTruth);
+  
+  % Display out metric scores
+  disp(['Dice Score: ' ,num2str(similarity), ', Precision: ', num2str(precision), '' ...
+      ', Recall: ', num2str(recall), newline]);
 end
