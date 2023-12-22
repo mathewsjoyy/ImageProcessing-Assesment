@@ -91,9 +91,6 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     
     % Rescale image using bilinear interpolation
     I_gray_scale_bi = imresize(img_gray, 0.5, "bilinear");
-    
-    %figure;imshow(I_gray_scale_bi);title('Re-sized Image');
-    %figure;histogram(I_gray_scale_bi);title('Histogram (before enhancement)');
    
     % Enhance image before binarisation using contrast stretching
     % converts the intensity image I to double precision
@@ -104,10 +101,6 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     % Use the imadjust function to enhance the image
     I_gray_scale_bi_enhanced = imadjust(I_gray_scale_bi,[mi/255; ma/255],[0; 0.9]);
 
-    %figure;imshow(I_gray_scale_bi_enhanced);title('Enhanced Image');
-    %figure;histogram(I_gray_scale_bi_enhanced);
-    %title('Histogram (after enhancement)'); 
-
     % Use median filtering to help reduce noise in iamge before
     % applying edge detection
     img_smooth = medfilt2(I_gray_scale_bi_enhanced);
@@ -115,8 +108,8 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     % Use canny edge detection and change the sigma value to "0.08" to 
     % perform further noiser reduction
     edgeDetectionCanny = edge(img_smooth,'canny', 0.08);
-
-    %figure;imshow(edgeDetectionCanny);title("Edge Detection Result - Canny")
+    figure;imshow(edgeDetectionCanny)
+    title("Edge Detection Result - Canny")
     
     % Disk shaped structuring element with a radius of 3 pixels
     se = strel("disk", 3);
@@ -157,6 +150,24 @@ function [labeled_image, cmap] = screw_washer_detection(input_img)
     end
     
     labeled_image = bwlabel(I_filled_segmented);
+
+    % Display the re-sized image, histograms before and after enhancement,
+    % enhanced image, edge detection and segmentation
+    figure,subplot(3, 2, 1),imshow(I_gray_scale_bi);title('Re-sized Image');
+    axis on;
+    
+    subplot(3, 2, 2),histogram(I_gray_scale_bi);title('Histogram (before enhancement)');
+    axis on;
+    
+    subplot(3, 2, 3),imshow(I_gray_scale_bi_enhanced);title('Enhanced Image'); 
+    axis on;
+    
+    subplot(3, 2, 4),histogram(I_gray_scale_bi_enhanced);title('Histogram (after enhancement)'); 
+    axis on;
+    
+    subplot(3, 2, 5),imshow(edgeDetectionCanny);title('Edge Detection'); 
+
+    subplot(3, 2, 6),imshow(labeled_image, []);colormap(cmap);title('Segmentation');
 end
 
 % Function defnition for task 6 evaluation method
