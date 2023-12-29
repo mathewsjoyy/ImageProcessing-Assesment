@@ -1,5 +1,4 @@
-% Clear memory and close any open figures
-clear; close all;
+clear; close all; % Clear memory and close any open figures
 
 % Task 1: Pre-processing -----------------------
 % Step-1: Load input image
@@ -23,7 +22,7 @@ ma = max(max(J)); % find the maximum pixel intensity
 
 % Use the imadjust function to enhance the image
 I_gray_scale_bi_enhanced = imadjust(I_gray_scale_bi,[mi/255; ma/255],[0; 0.9]);
-figure, imshow(I_gray_scale_bi_enhanced);
+figure, imshow(I_gray_scale_bi_enhanced); 
 title("Step-5: Enhanced Image")
 
 % Step-6: Histogram after enhancement

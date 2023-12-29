@@ -61,10 +61,8 @@ end
 % for all all images
 mean_dice = mean(dice_scores);
 std_dice  = std(dice_scores);
-
 mean_precision = mean(precision_scores);
 std_precision  = std(precision_scores);
-
 mean_recall = mean(recall_scores);
 std_recall  = std(recall_scores);
 
