@@ -33,7 +33,7 @@ title("Step-6: Histogram for after enhancement.");
 binarisedImage = imbinarize(I_gray_scale_bi_enhanced, "adaptive", ...
     "ForegroundPolarity", "dark", "Sensitivity", 0.50);
 figure, imshow(binarisedImage)
-title("Step-5: Producing binarised image")
+title("Step-7: Producing binarised image")
 
 % Display the re-sized image, histograms before and after enhancement,
 % enhanced image and the binarised image
@@ -58,7 +58,7 @@ set(gcf, 'Position',pos+[0 -100 100 100]) % set new position of current sub - pl
 
 % Task 2: Edge detection ------------------------
 
-% Use median filtering to help reduce noise in iamge before
+% Use median filtering to help reduce noise in enhanced image before
 % applying edge detection
 img_smooth = medfilt2(I_gray_scale_bi_enhanced);
 
